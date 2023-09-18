@@ -6,6 +6,10 @@ urlpatterns = [
     # FCB
     # path('posts', pet_list, name='pet-list'),
     # path('posts/<str:pk>/', pet_detail, name='pet-detail'),
+    path('user/', user_list, name='user-list'),
+    path('user/profile/', user_profile, name='user-profile'),
+
+    path('user/login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
 
     #CB
     # path('posts/', PetList.as_view(), name='pet-list-create'),
@@ -13,6 +17,7 @@ urlpatterns = [
     path('product/', ProductList.as_view(), name='product-list'),
     path('adopt/', AdoptionList.as_view(), name='adopt-request'),
     path('detail/<int:pk>/', AdoptionDetail.as_view(), name ='adopt-detail'),
+
 
 
     #generics

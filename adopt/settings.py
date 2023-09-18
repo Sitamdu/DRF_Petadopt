@@ -144,26 +144,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #         'rest_framework.permissions.IsAdminUser',
 #     ],
 # }
-# REST_FRAMEWORK = {
+REST_FRAMEWORK = {
     # 'DEFAULT_AUTHENTICATION_CLASSES': [
     #     'rest_framework.authentication.BasicAuthentication',
     # ],
-    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': [
     #     'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
-    # ],
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
     # 'DEFAULT_PAGINATION_CLASS':
     #     'rest_framework.pagination.LimitOffsetPagination',
     #     'PAGE_SIZE': 100,
-# }
+}
 
 
-# from datetime import timedelta
-#
-# SIMPLE_JWT={
-#     "ROTATE_REFRESH_TOKENS": True,
-#     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),
-#     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-#
-#
-# }
+from datetime import timedelta
+
+SIMPLE_JWT={
+    "ROTATE_REFRESH_TOKENS": True,
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+
+
+}

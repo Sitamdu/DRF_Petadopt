@@ -1,9 +1,10 @@
 from .models import *
 from django.shortcuts import render
 from rest_framework.response import Response
-from .serializers import PetSerializer, AdoptSerializer, ProductSerializer
+from django.contrib.auth.models import User
+from .serializers import PetSerializer, AdoptSerializer, ProductSerializer,UserSerializerWithToken,UserSerializer
 from rest_framework import generics
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
@@ -12,9 +13,25 @@ from pet.permissions import AdminOrReadOnly, RequesterOrReadOnly
 from .pagination import PetsListPagination,PetListLOPagination,PetListCPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 
+class MyTokenObtainPairSeializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        # data['username'] = self.user.username
+        # data['email'] = self.user.email
+
+        serializer = UserSerializerWithToken(self.user).data
+        for k, v in serializer.items():
+            data[k] = v
+
+        return data
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSeializer
 
 class AdoptFilter(generics.ListAPIView):
     serializer_class = AdoptSerializer
@@ -108,6 +125,19 @@ class AdoptionDetail(APIView):
 
 
 # FCB using decorator
+@api_view(['GET'])
+def user_profile(request):
+    users = request.user
+    serializer = UserSerializer(users,many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def user_list(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users,many=True)
+    return Response(serializer.data)
+#
 # @api_view(['GET','POST'])
 # def pet_list(request):
 #
@@ -146,10 +176,10 @@ class AdoptionDetail(APIView):
 #         else:
 #             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 #
-    # if request.method == 'DELETE':
-    #     pet = Pet.objects.get(pk=pk)
-    #     pet.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+#     if request.method == 'DELETE':
+#         pet = Pet.objects.get(pk=pk)
+#         pet.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # using generic
 class PetList(generics.ListCreateAPIView):
