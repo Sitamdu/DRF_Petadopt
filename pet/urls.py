@@ -10,6 +10,7 @@ urlpatterns = [
     path('user/profile/', user_profile, name='user-profile'),
 
     path('user/login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('user/register/', register, name='register_user'),
 
     #CB
     # path('posts/', PetList.as_view(), name='pet-list-create'),
