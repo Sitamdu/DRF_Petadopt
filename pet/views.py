@@ -17,7 +17,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from django.contrib.auth.hashers import make_password
-
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
 class MyTokenObtainPairSeializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -132,17 +133,30 @@ class AdoptionDetail(APIView):
 
 def register(request):
     data = request.data
+    password = data.get('password')
+    password2 = data.get('password2')
+    email = data.get('email')
+
+    # Check if the passwords match.
+    if password != password2:
+        message = {'detail': 'Passwords do not match'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+    if User.objects.filter(email=email).exists():
+        message = {'detail': 'user with this email already exists'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
     try:
         user = User.objects.create(
             first_name = data['username'],
             username = data['username'],
             email = data['email'],
-            password = make_password(data['password'])
+            password = make_password(data['password']),
         )
         serializer = UserSerializerWithToken(user, many=False)
         return Response(serializer.data)
     except:
-        message = {'detail': 'User with this email already exits'}
+        message = {'detail': 'An Error occurred while registering'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 

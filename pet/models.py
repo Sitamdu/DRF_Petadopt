@@ -23,9 +23,23 @@ class Product(models.Model):
     prod_name = models.CharField(max_length=100)
     prod_type = models.CharField(max_length=50)
     prod_price = models.DecimalField(max_digits=10, decimal_places=2)
+    rating = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    reviews = models.IntegerField(null=True, blank=True, default=0)
 
     def __str__(self):
         return self.prod_name
+
+class ProductReview(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,  null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    rating = models.IntegerField(default=0)
+    comment = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.rating)
+
 
 class AdoptionRequest(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='adoption_requests')

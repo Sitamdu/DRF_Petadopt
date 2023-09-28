@@ -5,4 +5,4 @@ from .models import *
 admin.site.register(Pet)
 admin.site.register(AdoptionRequest)
 admin.site.register(Product)
-
+admin.site.register(ProductReview)
